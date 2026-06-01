@@ -6,13 +6,31 @@ A template for building micro-frontend apps that integrate with the Sampark shel
 
 Your app compiles to a single ES module (`dist/mount.js`) that the Sampark shell loads at runtime. The shell provides authentication (via cookie), permissions, navigation, and an event bus — you just build features.
 
+## Prerequisites
+
+- Node.js 20+
+- Yarn 4 (`corepack enable`)
+
 ## First 5 minutes
 
-1. **Install:** `yarn install`
-2. **Build:** `yarn build`
-3. **Check output:** `ls -lh dist/mount.js` — should be under 100 KB
+1. **Use this template** — click "Use this template" on GitHub to create your repo
+2. **Install:** `yarn install`
+3. **Build:** `yarn build`
+4. **Check output:** `ls -lh dist/mount.js` — should be under 100 KB
 
-> `@bg09/platform` and `@sampark-app/ui` are public packages on npm — no token needed.
+> `@sampark-app/ui` is a public package on npm — no token needed.
+> Platform contract types are bundled locally in `src/platform.d.ts` — no separate package to install.
+
+## Project structure
+
+```
+src/
+  mount.tsx       ← entry point — exports the FeatureModule
+  App.tsx         ← your root component
+  platform.d.ts   ← MountProps contract types (provided by shell team, do not edit)
+scripts/
+  validate-bundle.mjs  ← enforces bundle budget + checks externals
+```
 
 ## How to ship
 
@@ -23,24 +41,24 @@ Send `dist/mount.js` to your platform contact. They'll:
 
 ## The contract (`MountProps` fields)
 
-Your app's `mount(props: MountProps)` receives:
+Your `mount(props: MountProps)` receives:
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `container` | `HTMLElement` | The DOM element to render into |
 | `basePath` | `string` | Your router's basename (e.g. `/app/your-slug`) |
-| `contractVersion` | `string` | Shell version (e.g. `1.0`). Guard against breaking changes. |
+| `contractVersion` | `string` | Shell contract version (e.g. `1.0`) |
 | `user` | `User` | Authenticated user: `id`, `firstName`, `lastName`, `email` |
 | `can` | `CanFn` | `(key: string) => boolean` — synchronous permission check |
-| `navigate` | `NavigateFn` | Navigate the shell's router |
-| `events` | `EventBus` | Shell ↔ app event bus |
-| `csrfToken` | `string` | Include as `X-CSRF-Token` header on mutating requests |
+| `navigate` | `NavigateFn` | Navigate within the shell's router |
+| `events` | `EventBus` | Shell ↔ app event bus (`emit` / `on`) |
+| `csrfToken` | `string` | Include as `X-CSRF-Token` on mutating requests |
 
-See [@bg09/platform on npm](https://www.npmjs.com/package/@bg09/platform) for the full TypeScript definitions.
+Full type definitions are in `src/platform.d.ts`.
 
 ## Bundle budget
 
-Your bundle must be **under 100 KB**. The `validate-bundle.mjs` script enforces this and also checks that React and `@sampark-app/ui` are not inlined (they're provided by the shell).
+Your bundle must be **under 100 KB**. The `validate-bundle.mjs` script enforces this and checks that React and `@sampark-app/ui` are not inlined (they're provided by the shell at runtime).
 
 ## Routing
 
@@ -53,7 +71,7 @@ If using `react-router-dom`:
 
 ## Networking
 
-Always use `credentials: 'include'` and include the CSRF token on mutating requests:
+Always use `credentials: 'include'` and pass the CSRF token on mutating requests:
 ```ts
 fetch('/api/my-endpoint', {
   method: 'POST',
@@ -62,3 +80,7 @@ fetch('/api/my-endpoint', {
   body: JSON.stringify(data),
 });
 ```
+
+## Updating the contract
+
+When the shell team updates `MountProps`, they'll send you a new `src/platform.d.ts`. Replace the existing file and fix any TypeScript errors — those are the breaking changes you need to handle.
