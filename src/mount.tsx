@@ -1,10 +1,8 @@
 import { createRoot, type Root } from 'react-dom/client';
-import {
-  type FeatureModule,
-  type MountProps,
-  CONTRACT_MAJOR,
-} from '@harisumiran/platform';
+import type { FeatureModule, MountProps } from './platform';
 import { App } from './App';
+
+const CONTRACT_MAJOR = 1;
 
 const featureModule: FeatureModule = {
   mount: async (props: MountProps) => {

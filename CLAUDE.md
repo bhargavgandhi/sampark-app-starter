@@ -2,8 +2,8 @@
 
 ## Imports
 - Don't import React directly for JSX; the JSX transform handles it.
-- Import from `@harisumiran/platform` for types only (no runtime code available from it).
-- Import from `@harisumiran/ui` for UI components.
+- Import from `@bg09/platform` for types only (no runtime code available from it).
+- Import from `@bg09/ui` for UI components.
 
 ## Networking
 - Always pass `credentials: 'include'` to every `fetch()` call.
@@ -21,7 +21,7 @@
 ## Bundle budget
 - Target: under 100 KB for `dist/mount.js`.
 - Never remove or modify the `external` list in `vite.config.ts`.
-- The `validate-bundle.mjs` script will fail the build if React or `@harisumiran/ui` is inlined.
+- The `validate-bundle.mjs` script will fail the build if React or `@bg09/ui` is inlined.
 
 ## Routing
 - If using `react-router-dom`, pass `basename={props.basePath}` to `BrowserRouter`.

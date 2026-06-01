@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { MountProps } from '@harisumiran/platform';
-import { Card } from '@harisumiran/ui';
+import type { MountProps } from './platform';
+import { Card } from '@bg09/ui';
 
 interface HelloResponse {
   message: string;

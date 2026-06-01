@@ -10,8 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@harisumiran/platform": "^1.0.0",
-    "@harisumiran/ui": "^0.2.0",
+    "@bg09/ui": "^0.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

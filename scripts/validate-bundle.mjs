@@ -8,7 +8,7 @@ const BUNDLE = resolve('dist/mount.js');
 const FORBIDDEN = [
   { needle: 'react.production.min', why: 'React appears inlined into the bundle' },
   { needle: '__SECRET_INTERNALS_DO_NOT_USE', why: 'React internals appear inlined' },
-  { needle: '@harisumiran/ui/dist', why: '@harisumiran/ui appears inlined' },
+  { needle: '@bg09/ui/dist', why: '@bg09/ui appears inlined' },
 ];
 
 const size = statSync(BUNDLE).size;

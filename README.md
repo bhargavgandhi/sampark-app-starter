@@ -12,7 +12,7 @@ Your app compiles to a single ES module (`dist/mount.js`) that the Sampark shell
 2. **Build:** `yarn build`
 3. **Check output:** `ls -lh dist/mount.js` — should be under 100 KB
 
-> `@harisumiran/platform` and `@harisumiran/ui` are public packages on npm — no token needed.
+> `@bg09/platform` and `@bg09/ui` are public packages on npm — no token needed.
 
 ## How to ship
 
@@ -36,11 +36,11 @@ Your app's `mount(props: MountProps)` receives:
 | `events` | `EventBus` | Shell ↔ app event bus |
 | `csrfToken` | `string` | Include as `X-CSRF-Token` header on mutating requests |
 
-See [@harisumiran/platform on npm](https://www.npmjs.com/package/@harisumiran/platform) for the full TypeScript definitions.
+See [@bg09/platform on npm](https://www.npmjs.com/package/@bg09/platform) for the full TypeScript definitions.
 
 ## Bundle budget
 
-Your bundle must be **under 100 KB**. The `validate-bundle.mjs` script enforces this and also checks that React and `@harisumiran/ui` are not inlined (they're provided by the shell).
+Your bundle must be **under 100 KB**. The `validate-bundle.mjs` script enforces this and also checks that React and `@bg09/ui` are not inlined (they're provided by the shell).
 
 ## Routing
 
