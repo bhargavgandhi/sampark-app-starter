@@ -12,7 +12,7 @@ Your app compiles to a single ES module (`dist/mount.js`) that the Sampark shell
 2. **Build:** `yarn build`
 3. **Check output:** `ls -lh dist/mount.js` — should be under 100 KB
 
-> `@bg09/platform` and `@bg09/ui` are public packages on npm — no token needed.
+> `@bg09/platform` and `@sampark-app/ui` are public packages on npm — no token needed.
 
 ## How to ship
 
@@ -40,7 +40,7 @@ See [@bg09/platform on npm](https://www.npmjs.com/package/@bg09/platform) for th
 
 ## Bundle budget
 
-Your bundle must be **under 100 KB**. The `validate-bundle.mjs` script enforces this and also checks that React and `@bg09/ui` are not inlined (they're provided by the shell).
+Your bundle must be **under 100 KB**. The `validate-bundle.mjs` script enforces this and also checks that React and `@sampark-app/ui` are not inlined (they're provided by the shell).
 
 ## Routing
 

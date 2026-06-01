@@ -20,7 +20,7 @@ export default defineConfig({
         'react-dom',
         'react/jsx-runtime',
         'react/jsx-dev-runtime',
-        '@bg09/ui',
+        '@sampark-app/ui',
       ],
     },
     target: 'es2020',
