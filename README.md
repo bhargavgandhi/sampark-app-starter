@@ -84,3 +84,14 @@ fetch('/api/my-endpoint', {
 ## Updating the contract
 
 When the shell team updates `MountProps`, they'll send you a new `src/platform.d.ts`. Replace the existing file and fix any TypeScript errors — those are the breaking changes you need to handle.
+
+## Using Claude Code
+
+This template ships with agent guidelines and skills in `.claude/`:
+
+| Skill | Command | What it does |
+|-------|---------|-------------|
+| `generate-feature` | `/generate-feature` | Scaffolds a new feature component with correct prop types, fetch patterns, and barrel export |
+| `add-api-call` | `/add-api-call` | Inserts a correctly structured `fetch()` with CSRF token, `credentials: 'include'`, and `AbortController` cleanup |
+
+The `CLAUDE.md` at the repo root is automatically loaded by Claude Code and enforces platform rules (externals, bundle budget, CSRF, abort cleanup) without you having to repeat them in every prompt.
