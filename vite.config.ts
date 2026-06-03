@@ -1,8 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import cssInjectedByJs from 'vite-plugin-css-injected-by-js';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), cssInjectedByJs()],
+  define: {
+    // Required: React checks process.env.NODE_ENV at runtime but process is
+    // undefined in blob-URL ESM contexts. Inline the value at build time.
+    'process.env.NODE_ENV': JSON.stringify('production'),
+  },
   build: {
     lib: {
       entry: 'src/mount.tsx',
@@ -10,18 +16,9 @@ export default defineConfig({
       fileName: () => 'mount.js',
     },
     rollupOptions: {
-      // ⚠️ DO NOT MODIFY THIS EXTERNAL LIST.
-      // These dependencies are provided by the Sampark shell at runtime.
-      // Bundling them will (1) balloon your bundle size and
-      // (2) cause React hook errors from duplicate React instances.
-      // The validate-bundle.mjs script will fail your build if you do.
-      external: [
-        'react',
-        'react-dom',
-        'react/jsx-runtime',
-        'react/jsx-dev-runtime',
-        '@sampark-app/ui',
-      ],
+      // Bundle everything in. The Sampark shell loads micro-apps via blob URLs,
+      // which cannot resolve bare module specifiers like 'react/jsx-runtime'.
+      external: [],
     },
     target: 'es2020',
     minify: 'esbuild',

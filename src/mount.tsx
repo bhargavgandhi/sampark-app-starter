@@ -1,5 +1,6 @@
 import { createRoot, type Root } from 'react-dom/client';
 import type { FeatureModule, MountProps } from './platform';
+import './index.css';
 import { App } from './App';
 
 const CONTRACT_MAJOR = 1;
