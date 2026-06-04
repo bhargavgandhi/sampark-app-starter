@@ -5,6 +5,7 @@ export interface User {
     firstName: string;
     lastName: string;
     email: string;
+    profileImageUrl?: string;
 }
 export type PermissionKey = string;
 export type CanFn = (key: PermissionKey) => boolean;
