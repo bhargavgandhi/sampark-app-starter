@@ -1,0 +1,74 @@
+name: Deploy to Firebase Hosting (QA)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-qa:
+    runs-on: ubuntu-latest
+    environment: qa
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - run: yarn install --frozen-lockfile
+
+      - name: Build (QA)
+        run: yarn build:qa
+
+      - name: Write loadBundle.json
+        run: |
+          cat > dist/loadBundle.json <<EOF
+          {
+            "bundleUrl": "https://qa-your-team-app.web.app/mount.js?v=${{ github.sha }}"
+          }
+          EOF
+
+      - name: Deploy to Firebase (QA)
+        uses: harisumiran/deploy-to-firebase-action@v1
+        with:
+          firebase_project_id: your-sampark-project
+          hosting_target: qa-your-team-app
+          service_account: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_QA }}
+          build_dir: dist
+          keep_releases: '2'
+          headers: |
+            [
+              {
+                "source": "/assets/**",
+                "headers": [
+                  { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+                  { "key": "Access-Control-Allow-Origin", "value": "*" }
+                ]
+              },
+              {
+                "source": "/mount.js",
+                "headers": [
+                  { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+                  { "key": "Access-Control-Allow-Origin", "value": "*" }
+                ]
+              },
+              {
+                "source": "/loadBundle",
+                "headers": [
+                  { "key": "Cache-Control", "value": "no-store" },
+                  { "key": "Access-Control-Allow-Origin", "value": "*" }
+                ]
+              },
+              {
+                "source": "/loadBundle.json",
+                "headers": [
+                  { "key": "Cache-Control", "value": "no-store" },
+                  { "key": "Access-Control-Allow-Origin", "value": "*" }
+                ]
+              }
+            ]
+          rewrites: |
+            [
+              { "source": "/loadBundle", "destination": "/loadBundle.json" }
+            ]
