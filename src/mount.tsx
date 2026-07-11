@@ -1,7 +1,8 @@
 import { createRoot, type Root } from 'react-dom/client';
-import type { FeatureModule, MountProps } from './platform';
-import './index.css';
+
 import { App } from './App';
+import './index.css';
+import type { FeatureModule, MountProps } from './platform';
 
 const CONTRACT_MAJOR = 1;
 
@@ -12,7 +13,7 @@ const featureModule: FeatureModule = {
     if (Number(major) !== CONTRACT_MAJOR) {
       throw new Error(
         `Incompatible Sampark shell: contract v${props.contractVersion}, ` +
-          `this app was built against v${CONTRACT_MAJOR}.x`,
+          `this app was built against v${CONTRACT_MAJOR}.x`
       );
     }
 

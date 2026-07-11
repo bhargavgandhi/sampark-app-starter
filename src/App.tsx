@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import type { MountProps } from './platform';
 import { Card } from '@sampark-app/ui';
+import { useEffect, useState } from 'react';
+
+import type { MountProps } from './platform';
 
 interface HelloResponse {
   message: string;
