@@ -6,6 +6,7 @@ on:
 
 jobs:
   deploy-qa:
+    if: github.repository != 'bhargavgandhi/sampark-app-starter'
     runs-on: ubuntu-latest
     environment: qa
     steps:
