@@ -22,10 +22,12 @@
 - `contractVersion` — guard against incompatible shell versions
 
 ## Networking
-- Always pass `credentials: 'include'` to every `fetch()`.
-- Always include `csrfToken` as `X-CSRF-Token` header on POST/PUT/PATCH/DELETE.
-- Never store tokens, credentials, or user data in localStorage or cookies.
-- Always use `AbortController` for fetches inside `useEffect` and abort on cleanup.
+
+This template ships two data-layer scaffolds with two different, both-intentional auth patterns — don't unify them:
+
+- **GraphQL** (`src/core/graphql/client.ts`, default once you've pointed `codegen.ts` and `VITE_GRAPHQL_ENDPOINT` at a real backend) — use Apollo codegen'd hooks (`yarn codegen`). Auth is `Authorization: Bearer <token>` where `token = localStorage.getItem('ApplicationToken')`. This is not a general license to use localStorage for tokens — it's specifically for the Sampark shell's Firebase-JWT handoff, which the GraphQL backend authenticates against directly.
+- **REST** (`src/core/apiClient.ts`, axios) — use for endpoints with no GraphQL operation. Sends `withCredentials: true` and, once `configureApiClient(csrfToken)` runs, `X-CSRF-Token` on mutating requests automatically. Don't hand-roll `fetch()` for REST.
+- Always use `AbortController` for any `fetch()`-based work inside `useEffect` and abort on cleanup (Apollo/axios handle their own request lifecycle).
 
 ## Permissions
 - Use `props.can('resource:action')` for UI gating only (show/hide elements).
@@ -40,7 +42,7 @@
 - Abort all in-flight fetch requests on unmount.
 
 ## Bundle hygiene
-- Target: under 100 KB for `dist/mount.js`.
+- Target: under 4 MB for `dist/mount.js` (enforced by `scripts/validate-bundle.mjs`) — stay well under that in practice; a bare app with no features is ~400 KB.
 - Never modify the `external` list in `vite.config.ts`.
 - Run `yarn build` to validate — `validate-bundle.mjs` enforces size + externals.
 - No `console.log` in production code; use conditional checks on `import.meta.env.DEV`.

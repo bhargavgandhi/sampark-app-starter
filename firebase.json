@@ -1,0 +1,127 @@
+{
+  "hosting": [
+    {
+      "site": "your-team-app",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/*.map"],
+      "rewrites": [
+        {
+          "source": "/loadBundle",
+          "destination": "/loadBundle.json"
+        }
+      ],
+      "headers": [
+        {
+          "source": "/assets/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/mount.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/loadBundle",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-store" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/loadBundle.json",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-store" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        }
+      ]
+    },
+    {
+      "site": "qa-your-team-app",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/*.map"],
+      "rewrites": [
+        {
+          "source": "/loadBundle",
+          "destination": "/loadBundle.json"
+        }
+      ],
+      "headers": [
+        {
+          "source": "/assets/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/mount.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/loadBundle",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-store" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/loadBundle.json",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-store" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        }
+      ]
+    },
+    {
+      "site": "dev-your-team-app",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/*.map"],
+      "rewrites": [
+        {
+          "source": "/loadBundle",
+          "destination": "/loadBundle.json"
+        }
+      ],
+      "headers": [
+        {
+          "source": "/assets/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/mount.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/loadBundle",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-store" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        },
+        {
+          "source": "/loadBundle.json",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-store" },
+            { "key": "Access-Control-Allow-Origin", "value": "*" }
+          ]
+        }
+      ]
+    }
+  ]
+}

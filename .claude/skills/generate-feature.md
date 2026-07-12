@@ -45,8 +45,7 @@ export { <Name> } from './<Name>';
 ## Rules to enforce
 
 - Props must be explicit destructured fields from MountProps — not `props: MountProps` spread
-- All `fetch()` calls must have `credentials: 'include'` and `AbortController` cleanup
-- Mutating requests must include `headers: { 'X-CSRF-Token': csrfToken }`
+- For data needs, follow the `add-api-call` skill: GraphQL (`src/core/graphql/client.ts`) by default once configured, REST via `src/core/apiClient.ts` as fallback — don't hand-roll `fetch()`
 - Use `can('resource:action')` only for UI gating (show/hide), never for security
 - No `console.log` — use `import.meta.env.DEV` guard if needed for debug logging
 - Import UI components from `@sampark-app/ui`, not local copies
