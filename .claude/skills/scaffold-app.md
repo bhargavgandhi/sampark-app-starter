@@ -78,12 +78,14 @@ Once Step 3 is done, print this JSON (filled in) for the user to pass to the `re
 ```json
 {
   "slug": "<slug>",
-  "version": "0.0.1",
   "getBundleUrl": "https://<slug>.web.app/loadBundle",
   "routePrefix": "/app/<slug>",
-  "requiredEntitlements": []
+  "requiredEntitlements": [],
+  "displayName": "<Human-Readable App Name>"
 }
 ```
+
+This matches the shell's actual manifest schema (`apps/sampark-new/src/platform/manifest/schema.ts` in `sampark-app`) — no `version` field; `displayName` is optional but expected for anything shown in the shell sidebar.
 
 Note per environment: `getBundleUrl` should point at `https://dev-<slug>.web.app/loadBundle` for the dev manifest and `https://qa-<slug>.web.app/loadBundle` for the qa manifest — print all three variants, one per environment, since `register-app` needs to insert into `manifest.dev.json`, `manifest.qa.json`, and `manifest.prod.json` separately.
 
