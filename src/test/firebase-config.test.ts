@@ -5,6 +5,7 @@ import { resolve } from 'path';
 import { describe, expect, it } from 'vitest';
 
 const firebaseJson = JSON.parse(readFileSync(resolve(__dirname, '../../firebase.json'), 'utf-8'));
+const sites: string[] = firebaseJson.hosting.map((h: { site: string }) => h.site);
 
 function findHeaderRule(
   headers: Array<{ source: string; headers: Array<{ key: string; value: string }> }>,
@@ -13,7 +14,23 @@ function findHeaderRule(
   return headers.find((rule) => rule.source === source);
 }
 
-describe.each(['your-team-app', 'qa-your-team-app', 'dev-your-team-app'])(
+describe('firebase.json site naming convention', () => {
+  // These assertions are deliberately slug-agnostic: this template's scaffold-app
+  // skill rewrites the actual site names from a placeholder to a real slug, and
+  // these tests must keep passing unmodified after that happens.
+  it('has exactly 3 hosting sites (prod, qa, dev)', () => {
+    expect(sites).toHaveLength(3);
+  });
+
+  it('has one unprefixed (prod) site, and qa-/dev- prefixed variants of the same base name', () => {
+    const prodSite = sites.find((s) => !s.startsWith('qa-') && !s.startsWith('dev-'));
+    expect(prodSite).toBeDefined();
+    expect(sites).toContain(`qa-${prodSite}`);
+    expect(sites).toContain(`dev-${prodSite}`);
+  });
+});
+
+describe.each(firebaseJson.hosting.map((h: { site: string }) => h.site) as string[])(
   'firebase.json hosting site %s',
   (site) => {
     const hosting = firebaseJson.hosting.find((h: { site: string }) => h.site === site);

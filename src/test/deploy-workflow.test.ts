@@ -9,6 +9,7 @@ function readWorkflow(name: string): string {
 }
 
 const firebaseJson = JSON.parse(readFileSync(resolve(__dirname, '../../firebase.json'), 'utf-8'));
+const sites: string[] = firebaseJson.hosting.map((h: { site: string }) => h.site);
 
 function extractYamlBlockScalar(workflow: string, key: string): unknown {
   const lines = workflow.split('\n');
@@ -32,17 +33,29 @@ function extractYamlBlockScalar(workflow: string, key: string): unknown {
   return JSON.parse(blockLines.join('\n'));
 }
 
-describe.each([
-  ['deploy-dev.yml', 'your-sampark-project', 'dev-your-team-app', 'dev-your-team-app', 'dev'],
-  ['deploy-qa.yml', 'your-sampark-project', 'qa-your-team-app', 'qa-your-team-app', 'qa'],
-  ['deploy-prod.yml', 'your-sampark-project', 'your-team-app', 'your-team-app', 'prod'],
-])('%s', (fileName, projectId, hostingTarget, site, envScript) => {
-  const workflow = readWorkflow(fileName);
-  const hosting = firebaseJson.hosting.find((h: { site: string }) => h.site === site);
+function extractInput(workflow: string, key: string): string {
+  const match = workflow.match(new RegExp(`${key}:\\s*(\\S+)`));
+  if (!match) throw new Error(`Input "${key}" not found`);
+  return match[1];
+}
 
-  it(`builds/deploys the ${envScript} environment with the right project/target`, () => {
-    expect(workflow).toMatch(new RegExp(`firebase_project_id: ${projectId}\\b`));
-    expect(workflow).toMatch(new RegExp(`hosting_target: ${hostingTarget}\\b`));
+// Slug-agnostic: reads hosting_target/firebase_project_id/site names out of
+// the workflow files and firebase.json rather than hardcoding a slug, so
+// this stays valid after scaffold-app rewrites the placeholder.
+describe.each([
+  ['deploy-dev.yml', 'dev'],
+  ['deploy-qa.yml', 'qa'],
+  ['deploy-prod.yml', 'prod'],
+])('%s', (fileName, envScript) => {
+  const workflow = readWorkflow(fileName);
+  const hostingTarget = extractInput(workflow, 'hosting_target');
+  const hosting = firebaseJson.hosting.find((h: { site: string }) => h.site === hostingTarget);
+
+  it(`deploys to a hosting_target that exists in firebase.json`, () => {
+    expect(sites).toContain(hostingTarget);
+  });
+
+  it(`builds via yarn build:${envScript} and the standard deploy action`, () => {
     expect(workflow).toMatch(new RegExp(`yarn build:${envScript}\\b`));
     expect(workflow).toMatch(/uses: harisumiran\/deploy-to-firebase-action@v1/);
     expect(workflow).toMatch(/keep_releases: '2'/);
@@ -51,6 +64,24 @@ describe.each([
   it("passes headers/rewrites inputs matching this site's firebase.json entry", () => {
     expect(extractYamlBlockScalar(workflow, 'headers')).toEqual(hosting.headers);
     expect(extractYamlBlockScalar(workflow, 'rewrites')).toEqual(hosting.rewrites);
+  });
+});
+
+describe('deploy workflow site convention', () => {
+  it('maps deploy-prod.yml to the unprefixed site, and dev/qa workflows to their prefixed variants of it', () => {
+    const prodTarget = extractInput(readWorkflow('deploy-prod.yml'), 'hosting_target');
+    const qaTarget = extractInput(readWorkflow('deploy-qa.yml'), 'hosting_target');
+    const devTarget = extractInput(readWorkflow('deploy-dev.yml'), 'hosting_target');
+
+    expect(qaTarget).toBe(`qa-${prodTarget}`);
+    expect(devTarget).toBe(`dev-${prodTarget}`);
+  });
+
+  it('all three workflows deploy to the same firebase_project_id', () => {
+    const projectIds = ['deploy-dev.yml', 'deploy-qa.yml', 'deploy-prod.yml'].map((f) =>
+      extractInput(readWorkflow(f), 'firebase_project_id')
+    );
+    expect(new Set(projectIds).size).toBe(1);
   });
 });
 
